@@ -399,30 +399,6 @@
   .nextRoundBtn:active{ transform: translateY(1px) scale(.98); }
   .arrowIcon{ width:30px; height:30px; fill:#fff; }
 
-  .soundBtn{
-    position:absolute;
-    top:14px;
-    right:14px;
-    z-index:80;
-    width:50px;
-    height:50px;
-    border-radius:15px;
-    border:1px solid rgba(255,255,255,0.55);
-    background: rgba(255,255,255,0.18);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 12px 22px rgba(0,0,0,0.22);
-    cursor:pointer;
-    color:#fff;
-    font-size:20px;
-    font-weight:900;
-    user-select:none;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-  }
-  .soundBtn:active{ transform: scale(.98); }
-  .soundBtn.off{ opacity:.65; }
-
   .timerPill{
     position:absolute;
     top:14px;
@@ -799,7 +775,6 @@
     .tablet{ height: min(700px, 88vh); border-width: 8px; }
     .boardWrap{ padding: 50px 20px 40px; }
     .roundTop{ font-size: 18px; padding: 6px 16px; }
-    .soundBtn{ width: 46px; height: 46px; font-size: 18px; }
     .timerPill{ padding: 6px 10px; font-size: 14px; }
     .timerNum{ min-width: 34px; }
     .teamHUD{ top: 60px; }
@@ -975,8 +950,6 @@
       <div class="roundTop" id="roundTop">
         الجولة <span id="roundNumber">الأولى</span>
       </div>
-
-      <button class="soundBtn" id="soundBtn" title="تشغيل/كتم الصوت" type="button">🔊</button>
 
       <canvas id="confettiCanvas"></canvas>
 
@@ -1243,7 +1216,6 @@
     var sizeSlider    = $("sizeSlider");
 
     var nextRoundBtn  = $("nextRoundBtn");
-    var soundBtn      = $("soundBtn");
 
     var resultOverlay = $("resultOverlay");
     var resultCard    = $("resultCard");
@@ -1295,19 +1267,6 @@
       }catch(e){}
     }
 
-    function updateSoundBtn(){
-      if(!soundBtn) return;
-      if(soundEnabled){
-        soundBtn.classList.remove("off");
-        soundBtn.textContent = "🔊";
-        soundBtn.title = "كتم الصوت";
-      }else{
-        soundBtn.classList.add("off");
-        soundBtn.textContent = "🔇";
-        soundBtn.title = "تشغيل الصوت";
-      }
-    }
-
     // ✅ بدلاً من pointerdown فقط: نغطي touch/click/mouse لضمان iPhone
     ["touchstart","pointerdown","mousedown","click","keydown"].forEach(function(evt){
       window.addEventListener(evt, function(){
@@ -1317,19 +1276,6 @@
         }
       }, {once:true, passive:true});
     });
-
-    if(soundBtn){
-      updateSoundBtn();
-      soundBtn.addEventListener("click", function(){
-        unlockAudio();
-        soundEnabled = !soundEnabled;
-        updateSoundBtn();
-        // لو رجّعنا الصوت بعد كتمه على iOS، نضمن resume
-        if(soundEnabled){
-          ensureAudio();
-        }
-      });
-    }
 
     function playWinSound(){
       if(!soundEnabled) return;
